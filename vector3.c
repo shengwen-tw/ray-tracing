@@ -1,6 +1,13 @@
 #include <math.h>
 #include <vector3.h>
 
+float vec3_assign(vec3_t *v_dest, vec3_t *v_src)
+{
+	v_dest->e[0] = v_src->e[0];
+	v_dest->e[1] = v_src->e[1];
+	v_dest->e[2] = v_src->e[2];
+}
+
 float vec3_set(vec3_t *v, float x, float y, float z)
 {
 	v->e[0] = x;
@@ -28,6 +35,13 @@ void vec3_add(vec3_t *v1, vec3_t *v2, vec3_t *v_result)
 	v_result->e[0] = v1->e[0] + v2->e[0];
 	v_result->e[1] = v1->e[1] + v2->e[1];
 	v_result->e[2] = v1->e[2] + v2->e[2];
+}
+
+void vec3_sub(vec3_t *v1, vec3_t *v2, vec3_t *v_result)
+{
+	v_result->e[0] = v1->e[0] - v2->e[0];
+	v_result->e[1] = v1->e[1] - v2->e[1];
+	v_result->e[2] = v1->e[2] - v2->e[2];
 }
 
 void vec3_scaling(float factor, vec3_t *v, vec3_t *v_result)
