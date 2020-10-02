@@ -33,15 +33,15 @@ float hit_sphere(point3_t *center, float radius, ray_t *ray)
 	vec3_t oc;
 	vec3_sub(&ray->orig, center, &oc);
 
-	float a = vec3_dot_product(&ray->dir, &ray->dir);
-	float b = 2.0f * vec3_dot_product(&oc, &ray->dir);
-	float c = vec3_dot_product(&oc, &oc) - (radius * radius);
-	float discriminant = b*b - 4.0f*a*c;
+	float a = vec3_length_squared(&ray->dir);
+	float half_b = vec3_dot_product(&oc, &ray->dir);
+	float c = vec3_length_squared(&oc) - (radius * radius);
+	float discriminant = (half_b * half_b) - (a * c);
 
 	if(discriminant < 0.0f) {
 		return -1.0f;
 	} else {
-		return (-b - sqrt(discriminant)) / (2.0f * a);
+		return (-half_b - sqrt(discriminant)) / a;
 	}
 }
 
@@ -63,9 +63,9 @@ void ray_color(ray_t *ray, color_t *pixel_color)
 		vec3_unit_vector(&tmp, &normal_vec);
 
 		color_set(pixel_color,
-                          0.5f * vec3_get_x(&normal_vec) + 1.0f,
-                          0.5f * vec3_get_y(&normal_vec) + 1.0f,
-                          0.5f * vec3_get_z(&normal_vec) + 1.0f);
+                          0.5f * (vec3_get_x(&normal_vec) + 1.0f),
+                          0.5f * (vec3_get_y(&normal_vec) + 1.0f),
+                          0.5f * (vec3_get_z(&normal_vec) + 1.0f));
 
 		return;
 	}
