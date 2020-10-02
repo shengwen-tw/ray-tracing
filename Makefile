@@ -2,7 +2,8 @@ SRC=main.c \
 	vector3.c \
 	color.c \
 	ray.c \
-	sphere.c
+	sphere.c \
+	hittable_objects.c
 
 CFLAGS=-I./
 

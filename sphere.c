@@ -32,6 +32,11 @@ bool sphere_hit(sphere_t *sphere, ray_t *ray, float t_min, float t_max, hit_reco
 			vec3_sub(&rec->p, &sphere->center, &vec_tmp);
 			vec3_div(sphere->radius, &vec_tmp, &rec->normal);
 
+			vec3_t outward_normal;
+			vec3_sub(&rec->p, &sphere->center, &vec_tmp);
+			vec3_div(sphere->radius, &vec_tmp, &outward_normal);
+			set_face_normal(rec, ray, &outward_normal);
+
 			return true;
 		}
 
@@ -43,6 +48,11 @@ bool sphere_hit(sphere_t *sphere, ray_t *ray, float t_min, float t_max, hit_reco
 			vec3_t vec_tmp;
 			vec3_sub(&rec->p, &sphere->center, &vec_tmp);
 			vec3_div(sphere->radius, &vec_tmp, &rec->normal);
+
+			vec3_t outward_normal;
+			vec3_sub(&rec->p, &sphere->center, &vec_tmp);
+			vec3_div(sphere->radius, &vec_tmp, &outward_normal);
+			set_face_normal(rec, ray, &outward_normal);
 
 			return true;
 		}

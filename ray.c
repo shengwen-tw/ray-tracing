@@ -45,6 +45,19 @@ float hit_sphere(point3_t *center, float radius, ray_t *ray)
 	}
 }
 
+void set_face_normal(hit_record_t *rec, ray_t *ray, vec3_t *outward_normal)
+{
+	rec->front_face = vec3_dot_product(&ray->dir, outward_normal) < 0.0f;
+
+	if(rec->front_face == true) {
+		rec->normal = *outward_normal;
+	} else {
+		vec3_t neg_outward_normal;
+		vec3_negate(outward_normal, &neg_outward_normal);
+		rec->normal = neg_outward_normal;
+	}
+}
+
 void ray_color(ray_t *ray, color_t *pixel_color)
 {
 	float t; //color blending ratio

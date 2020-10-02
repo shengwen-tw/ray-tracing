@@ -2,6 +2,8 @@
 #include "vector3.h"
 #include "color.h"
 #include "ray.h"
+#include "sphere.h"
+#include "hittable_objects.h"
 
 int main(void)
 {
@@ -9,6 +11,20 @@ int main(void)
 	float aspect_ratio = 16.0 / 9.0;
 	int image_width = 400;
 	int image_height = (int)((float)(image_width) / aspect_ratio);
+
+	/* world */
+	sphere_t ball1, ball2;
+	point3_t ball1_orig, ball2_orig;
+	point3_set(&ball1_orig, 0, 0, -1);
+	point3_set(&ball2_orig, 0, -100.5, -1);
+	sphere_init(&ball1, &ball1_orig, 0.5f);
+	sphere_init(&ball2, &ball2_orig, 100.0f);
+
+	struct hittable_obj hittable_obj1, hittable_obj2; 
+	hittalbe_object_sphere_init(&hittable_obj1, &ball1);
+	hittalbe_object_sphere_init(&hittable_obj2, &ball2);
+	hittable_list_add(&hittable_obj1);
+	hittable_list_add(&hittable_obj2);
 
 	/* camera */
 	float viewport_height = 2.0f;
