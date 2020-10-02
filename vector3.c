@@ -51,7 +51,7 @@ void vec3_scaling(float factor, vec3_t *v, vec3_t *v_result)
 	v_result->e[2] = v->e[2] * factor;
 }
 
-void vec3_divide(float factor, vec3_t *v, vec3_t *v_result)
+void vec3_div(float factor, vec3_t *v, vec3_t *v_result)
 {
 	float div_factor = 1.0f / factor;
 

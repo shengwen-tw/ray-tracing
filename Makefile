@@ -1,7 +1,8 @@
 SRC=main.c \
 	vector3.c \
 	color.c \
-	ray.c
+	ray.c \
+	sphere.c
 
 CFLAGS=-I./
 

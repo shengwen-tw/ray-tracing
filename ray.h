@@ -9,6 +9,12 @@ typedef struct {
 	vec3_t dir;
 } ray_t;
 
+typedef struct {
+	point3_t p;
+	vec3_t normal;
+	double t;
+} hit_record_t;
+
 void ray_init(ray_t *ray, vec3_t *origin, vec3_t *direction);
 void ray_get_origin(ray_t *ray, point3_t *orig);
 void ray_get_direction(ray_t *ray, vec3_t *dir);
