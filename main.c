@@ -5,6 +5,7 @@
 #include "sphere.h"
 #include "hittable_objects.h"
 #include "camera.h"
+#include "common.h"
 
 int main(void)
 {
@@ -12,6 +13,7 @@ int main(void)
 	float aspect_ratio = 16.0 / 9.0;
 	int image_width = 400;
 	int image_height = (int)((float)(image_width) / aspect_ratio);
+	int anti_aliasing_samples = 100;
 
 	/* world */
 	sphere_t ball1, ball2;
@@ -34,23 +36,29 @@ int main(void)
 	printf("P3\n%d %d\n255\n", image_width, image_height);
 
 	/* plot */
-	int i, j;
+	int i, j, k;
 	//row
 	for(j = image_height - 1; j >= 0; j--) {
-		fprintf(stderr, "\rscan lines remaining: %d\n", j);
+		fprintf(stderr, "\rscanlines remaining: %d\n", j);
 
 		//column
 		for(i = 0; i < image_width; i++) {
-			float u = (float)i / (float)(image_width - 1);
-			float v = (float)j / (float)(image_height - 1); 
-
-			ray_t ray;
-			camera_get_ray(&camera, &ray, u, v);
-
 			color_t pixel_color;
-			ray_color(&ray, &pixel_color);
+			color_set(&pixel_color, 0.0f, 0.0f, 0.0f);
 
-			write_color(stdout, &pixel_color);
+			/* anti-aliasing */
+			for(k = 0; k < anti_aliasing_samples; k++) {
+				ray_t ray;
+				float u = (float)(i + random_float()) / (image_width - 1.0f);
+				float v = (float)(j + random_float()) / (image_height - 1.0f); 
+				camera_get_ray(&camera, &ray, u, v);
+
+				color_t sample_color;
+				ray_color(&ray, &sample_color);
+				vec3_add(&pixel_color, &sample_color, &pixel_color);
+			}
+
+			write_color(stdout, &pixel_color, anti_aliasing_samples);
 		}
 	}
 

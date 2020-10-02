@@ -1,8 +1,12 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
+#include <stdlib.h>
 #include <math.h>
 
-#define DEG_TO_RAD(degree) (degree * M_PI / 180.0f)
+#define deg_to_rad(degree) (degree * M_PI / 180.0f)
+
+float clamp(float x, float min, float max);
+float random_float(void);
 
 #endif

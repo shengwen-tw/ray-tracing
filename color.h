@@ -15,6 +15,6 @@
 
 typedef vec3_t color_t;
 
-void write_color(FILE *stream, color_t *color);
+void write_color(FILE *stream, color_t *color, int anti_aliasing_samples);
 
 #endif
