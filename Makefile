@@ -18,8 +18,12 @@ all:
 show:
 	eog output.ppm
 
+png:
+	convert output.ppm output.png
+
 clean:
 	rm ray_tracing
 	rm output.ppm
+	rm output.png
 
-.PHONY: all show clean
+.PHONY: all show clean png
