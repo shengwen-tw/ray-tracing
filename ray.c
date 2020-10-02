@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include "ray.h"
 #include "color.h"
 
@@ -26,8 +27,31 @@ void ray_at(ray_t *ray, float t, point3_t *point_result)
 	vec3_add((vec3_t *)&ray->orig, &t_times_dir, (vec3_t *)point_result);
 }
 
+bool hit_sphere(point3_t *center, float radius, ray_t *ray)
+{
+	vec3_t oc;
+	vec3_sub(&ray->orig, center, &oc);
+
+	float a = vec3_dot_product(&ray->dir, &ray->dir);
+	float b = 2.0f * vec3_dot_product(&oc, &ray->dir);
+	float c = vec3_dot_product(&oc, &oc) - (radius * radius);
+
+	float discriminant = b*b - 4.0f*a*c;
+
+	return (discriminant > 0.0f);
+}
+
 void ray_color(ray_t *ray, color_t *pixel_color)
 {
+	/* create a sphere */
+	point3_t sphere_center;
+	point3_set(&sphere_center, 0.0f, 0.0f, -1.0f);
+
+	if(hit_sphere(&sphere_center, 0.5, ray) == true) {
+		color_set(pixel_color, 1.0f, 0.0f, 0.0f);
+		return;
+	}
+
 	vec3_t unit_ray_dir;
 	vec3_unit_vector(&ray->dir, &unit_ray_dir);
 

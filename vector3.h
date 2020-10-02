@@ -24,4 +24,6 @@ float vec3_length_squared(vec3_t *v);
 
 typedef vec3_t point3_t;
 
+#define point3_set(point, x, y, z) vec3_set((vec3_t *)point, x, y, z)
+
 #endif
