@@ -23,8 +23,8 @@ int main(void)
 	struct hittable_obj hittable_obj1, hittable_obj2; 
 	hittalbe_object_sphere_init(&hittable_obj1, &ball1);
 	hittalbe_object_sphere_init(&hittable_obj2, &ball2);
-	hittable_list_add(&hittable_obj1);
 	hittable_list_add(&hittable_obj2);
+	hittable_list_add(&hittable_obj1);
 
 	/* camera */
 	float viewport_height = 2.0f;

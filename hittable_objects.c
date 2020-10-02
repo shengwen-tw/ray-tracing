@@ -36,3 +36,38 @@ void hittable_list_add(struct hittable_obj *new_obj)
 		}
 	}
 }
+
+bool hittable_list_hit(ray_t *ray, float t_min, float t_max, hit_record_t *rec)
+{
+	if(object_list_start == NULL) return false;
+
+	hit_record_t tmp_rec;
+	bool hit_anything = false;
+	float closest_so_far = t_max;
+
+	struct hittable_obj *list_ptr = object_list_start;
+	bool hit_test = false;
+	while(1) {
+		switch(list_ptr->hittable_type) {
+		case HITTALBE_TYPE_SPHERE:
+			hit_test = sphere_hit(&list_ptr->sphere, ray, t_min, closest_so_far, &tmp_rec);
+			break;
+		default:
+			break;
+		}
+
+		if(hit_test == true) {
+			hit_anything = true;
+			closest_so_far = tmp_rec.t;
+			*rec = tmp_rec;
+		}
+
+		if(list_ptr->next == NULL) {
+			break;
+		} else {
+			list_ptr = list_ptr->next;
+		}
+	}
+
+	return hit_anything;
+}

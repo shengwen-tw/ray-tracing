@@ -2,6 +2,7 @@
 #include <math.h>
 #include "ray.h"
 #include "color.h"
+#include "hittable_objects.h"
 
 void ray_init(ray_t *ray, vec3_t *origin, vec3_t *direction)
 {
@@ -61,25 +62,13 @@ void set_face_normal(hit_record_t *rec, ray_t *ray, vec3_t *outward_normal)
 void ray_color(ray_t *ray, color_t *pixel_color)
 {
 	float t; //color blending ratio
+	hit_record_t rec;
 
-	/* create a sphere */
-	point3_t sphere_center;
-	point3_set(&sphere_center, 0.0f, 0.0f, -1.0f);
-
-	t = hit_sphere(&sphere_center, 0.5f, ray);
-	if(t > 0.0f) {
-		point3_t ray_point;
-		ray_at(ray, t, &ray_point);
-
-		vec3_t normal_vec, tmp;
-		vec3_sub(&ray_point, &sphere_center, &tmp);
-		vec3_unit_vector(&tmp, &normal_vec);
-
+	if(hittable_list_hit(ray, 0, INFINITY, &rec) == true) {
 		color_set(pixel_color,
-                          0.5f * (vec3_get_x(&normal_vec) + 1.0f),
-                          0.5f * (vec3_get_y(&normal_vec) + 1.0f),
-                          0.5f * (vec3_get_z(&normal_vec) + 1.0f));
-
+                          0.5f * (vec3_get_x(&rec.normal) + 1.0f),
+                          0.5f * (vec3_get_y(&rec.normal) + 1.0f),
+                          0.5f * (vec3_get_z(&rec.normal) + 1.0f));
 		return;
 	}
 

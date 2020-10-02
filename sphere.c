@@ -57,4 +57,6 @@ bool sphere_hit(sphere_t *sphere, ray_t *ray, float t_min, float t_max, hit_reco
 			return true;
 		}
 	}
+
+	return false;
 }

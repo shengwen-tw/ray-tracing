@@ -19,4 +19,6 @@ void hittalbe_object_sphere_init(struct hittable_obj *new_obj, sphere_t *sphere)
 void hittable_list_clear(void);
 void hittable_list_add(struct hittable_obj *new_obj);
 
+bool hittable_list_hit(ray_t *ray, float t_min, float t_max, hit_record_t *rec);
+
 #endif
