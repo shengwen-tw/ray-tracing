@@ -70,7 +70,7 @@ void ray_color(ray_t *ray, color_t *pixel_color, int depth)
 	}
 
 	/* recursively refract the light until reaching the max depth */
-	if(hittable_list_hit(ray, 0, INFINITY, &rec) == true) {
+	if(hittable_list_hit(ray, 0.001, INFINITY, &rec) == true) {
 		vec3_t random_vec;
 		vec3_random_in_unit_sphere(&random_vec);
 
