@@ -73,7 +73,8 @@ void ray_color(ray_t *ray, color_t *pixel_color, int depth)
 	if(hittable_list_hit(ray, 0.001, INFINITY, &rec) == true) {
 		vec3_t random_vec;
 		//vec3_random_in_unit_sphere(&random_vec);
-		vec3_random_unit_vector(&random_vec);
+		//vec3_random_unit_vector(&random_vec);
+		vec3_random_in_hemisphere(&random_vec, &rec.normal);
 
 		point3_t target;
 		vec3_add(&rec.p, &rec.normal, &target);

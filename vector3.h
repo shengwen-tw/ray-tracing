@@ -25,6 +25,7 @@ void vec3_random(vec3_t *random_vec);
 void vec3_clamped_random(vec3_t *random_vec, float min, float max);
 void vec3_random_in_unit_sphere(vec3_t *vec);
 void vec3_random_unit_vector(vec3_t *vec);
+void vec3_random_in_hemisphere(vec3_t *random_vec, vec3_t *normal);
 
 typedef vec3_t point3_t;
 

@@ -148,3 +148,19 @@ void vec3_random_unit_vector(vec3_t *vec)
 	vec->e[1] = r * sin(a);
 	vec->e[2] = z;
 }
+
+void vec3_random_in_hemisphere(vec3_t *random_vec, vec3_t *normal)
+{
+	vec3_random_in_unit_sphere(random_vec);
+
+	if(vec3_dot_product(random_vec, normal) > 0.0f) {
+		//in the hemisphere as the normal
+		return;
+	} else {
+		//flip sign
+		random_vec->e[0] *= -1.0f;
+		random_vec->e[1] *= -1.0f;
+		random_vec->e[2] *= -1.0f;
+		return;
+	}
+}

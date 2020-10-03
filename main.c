@@ -11,7 +11,7 @@ int main(void)
 {
 	/* image */
 	float aspect_ratio = 16.0 / 9.0;
-	int image_width = 400;
+	int image_width = 1920;
 	int image_height = (int)((float)(image_width) / aspect_ratio);
 	int anti_aliasing_samples = 100;
 	int max_depth = 50;
