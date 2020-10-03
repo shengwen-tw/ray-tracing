@@ -13,3 +13,8 @@ float random_float(void)
 {
         return random() / ((float)RAND_MAX + 1.0f);
 }
+
+float clamped_random_float(float min, float max)
+{
+        return min + ((max - min) * random_float());
+}

@@ -1,5 +1,7 @@
+#include <stdio.h>
 #include <math.h>
 #include <vector3.h>
+#include "common.h"
 
 float vec3_assign(vec3_t *v_dest, vec3_t *v_src)
 {
@@ -105,4 +107,33 @@ float vec3_length(vec3_t *v)
 float vec3_length_squared(vec3_t *v)
 {
 	return v->e[0]*v->e[0] + v->e[1]*v->e[1] + v->e[2]*v->e[2];
+}
+
+void vec3_random(vec3_t *random_vec)
+{
+	random_vec->e[0] = random_float();
+	random_vec->e[1] = random_float();
+	random_vec->e[2] = random_float();
+}
+
+void vec3_clamped_random(vec3_t *random_vec, float min, float max)
+{
+	random_vec->e[0] = clamped_random_float(min, max);
+	random_vec->e[1] = clamped_random_float(min, max);
+	random_vec->e[2] = clamped_random_float(min, max);
+}
+
+void vec3_random_in_unit_sphere(vec3_t *vec)
+{
+	while(1) {
+		vec3_clamped_random(vec, -1.0f, 1.0f);
+
+		//fprintf(stderr, "%f\n", vec3_length(vec));
+
+		if(vec3_length(vec) > 1.0f) {
+			continue;
+		} else {
+			return;
+		}
+	}
 }

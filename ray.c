@@ -59,16 +59,37 @@ void set_face_normal(hit_record_t *rec, ray_t *ray, vec3_t *outward_normal)
 	}
 }
 
-void ray_color(ray_t *ray, color_t *pixel_color)
+void ray_color(ray_t *ray, color_t *pixel_color, int depth)
 {
-	float t; //color blending ratio
 	hit_record_t rec;
 
+	/* depth count == 0 means there is no much light energy left more */
+	if(depth <= 0) {
+		color_set(pixel_color, 0.0f, 0.0f, 0.0f);
+		return;
+	}
+
+	/* recursively refract the light until reaching the max depth */
 	if(hittable_list_hit(ray, 0, INFINITY, &rec) == true) {
-		color_set(pixel_color,
-                          0.5f * (vec3_get_x(&rec.normal) + 1.0f),
-                          0.5f * (vec3_get_y(&rec.normal) + 1.0f),
-                          0.5f * (vec3_get_z(&rec.normal) + 1.0f));
+		vec3_t random_vec;
+		vec3_random_in_unit_sphere(&random_vec);
+
+		point3_t target;
+		vec3_add(&rec.p, &rec.normal, &target);
+		vec3_add(&target, &random_vec, &target);
+
+		vec3_t sub_ray_dir;
+		vec3_sub(&target, &rec.p, &sub_ray_dir);
+
+		ray_t sub_ray;
+		ray_init(&sub_ray, &rec.p, &sub_ray_dir);
+
+		ray_color(&sub_ray, pixel_color, depth-1);
+
+		pixel_color->e[0] *= 0.5;
+		pixel_color->e[1] *= 0.5;
+		pixel_color->e[2] *= 0.5;
+
 		return;
 	}
 
@@ -76,7 +97,7 @@ void ray_color(ray_t *ray, color_t *pixel_color)
 	vec3_unit_vector(&ray->dir, &unit_ray_dir);
 
 	/* unit y direction range = -1 ~ 1*/
-	t = 0.5f * (vec3_get_y(&unit_ray_dir) + 1.0f);
+	float t = 0.5f * (vec3_get_y(&unit_ray_dir) + 1.0f);
 
 	color_t color1, color2;
 	color_set(&color1, 1.0f, 1.0f, 1.0f);
@@ -87,4 +108,6 @@ void ray_color(ray_t *ray, color_t *pixel_color)
 	color_scaling((1.0 - t), &color1, &tmp1);
 	color_scaling(t, &color2, &tmp2);
 	color_add(&tmp1, &tmp2, pixel_color);
+
+	return;
 }

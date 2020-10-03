@@ -8,5 +8,6 @@
 
 float clamp(float x, float min, float max);
 float random_float(void);
+float clamped_random_float(float min, float max);
 
 #endif

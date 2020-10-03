@@ -14,6 +14,7 @@ int main(void)
 	int image_width = 400;
 	int image_height = (int)((float)(image_width) / aspect_ratio);
 	int anti_aliasing_samples = 100;
+	int max_depth = 50;
 
 	/* world */
 	sphere_t ball1, ball2;
@@ -54,7 +55,7 @@ int main(void)
 				camera_get_ray(&camera, &ray, u, v);
 
 				color_t sample_color;
-				ray_color(&ray, &sample_color);
+				ray_color(&ray, &sample_color, max_depth);
 				vec3_add(&pixel_color, &sample_color, &pixel_color);
 			}
 

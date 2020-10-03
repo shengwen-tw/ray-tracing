@@ -21,6 +21,9 @@ void vec3_cross_product(vec3_t *v1, vec3_t *v2, vec3_t *v_result);
 void vec3_unit_vector(vec3_t *v, vec3_t *v_result);
 float vec3_length(vec3_t *v);
 float vec3_length_squared(vec3_t *v);
+void vec3_random(vec3_t *random_vec);
+void vec3_clamped_random(vec3_t *random_vec, float min, float max);
+void vec3_random_in_unit_sphere(vec3_t *vec);
 
 typedef vec3_t point3_t;
 
