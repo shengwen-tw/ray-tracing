@@ -137,3 +137,14 @@ void vec3_random_in_unit_sphere(vec3_t *vec)
 		}
 	}
 }
+
+void vec3_random_unit_vector(vec3_t *vec)
+{
+	float a = clamped_random_float(0.0f, 2.0f * M_PI);
+	float z = clamped_random_float(-1.0f, 1.0f);
+	float r = sqrt(1.0f - (z * z));
+
+	vec->e[0] = r * cos(a);
+	vec->e[1] = r * sin(a);
+	vec->e[2] = z;
+}
