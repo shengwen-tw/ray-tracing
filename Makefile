@@ -1,13 +1,14 @@
+CFLAGS=-o2
+
 SRC=main.c \
 	vector3.c \
 	color.c \
-	ray.c \
-	sphere.c \
+	ray_tracing.c \
 	rt_objects.c \
 	camera.c \
 	common.c \
 
-CFLAGS=-I./
+CFLAGS+=-I./
 
 LDFLAGS=-lm
 

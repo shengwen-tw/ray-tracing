@@ -1,5 +1,5 @@
 #include "vector3.h"
-#include "ray.h"
+#include "ray_tracing.h"
 #include "camera.h"
 
 void camera_init(camera_t *camera)

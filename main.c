@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include "vector3.h"
 #include "color.h"
-#include "ray.h"
-#include "sphere.h"
+#include "ray_tracing.h"
 #include "rt_objects.h"
 #include "camera.h"
 #include "common.h"
@@ -33,10 +32,10 @@ int main(void)
 	rt_object_set_sphere_shape(&rt_obj4, 1.0f, 0.0f, -1.0f, 0.5f);
 	rt_object_set_metal_material(&rt_obj4, 0.8f, 0.6f, 0.2f, 1.0f);
 
-	hittable_list_add(&rt_obj1);
-	hittable_list_add(&rt_obj2);
-	hittable_list_add(&rt_obj3);
-	hittable_list_add(&rt_obj4);
+	rt_object_list_add(&rt_obj1);
+	rt_object_list_add(&rt_obj2);
+	rt_object_list_add(&rt_obj3);
+	rt_object_list_add(&rt_obj4);
 
 	/* camera */
 	camera_t camera;

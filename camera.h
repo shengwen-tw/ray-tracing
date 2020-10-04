@@ -2,7 +2,7 @@
 #define __CAMERA_H__
 
 #include "vector3.h"
-#include "ray.h"
+#include "ray_tracing.h"
 
 typedef struct {
 	point3_t origin;

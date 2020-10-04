@@ -2,7 +2,7 @@
 #define __HITABLE_OBJECTS_H__
 
 #include "vector3.h"
-#include "sphere.h"
+#include "ray_tracing.h"
 
 enum {
 	HITTALBE_TYPE_SPHERE
@@ -29,10 +29,10 @@ void rt_object_set_difuse_material(struct rt_obj *obj,
 void rt_object_set_metal_material(struct rt_obj *obj,
         float albedo_red, float albedo_green, float albedo_blue, float fuzzyness);
 
-void hittable_list_clear(void);
-void hittable_list_add(struct rt_obj *new_obj);
+void rt_object_list_clear(void);
+void rt_object_list_add(struct rt_obj *new_obj);
 
-bool hittable_list_hit(ray_t *ray, float t_min, float t_max, hit_record_t *rec,
-                       struct rt_obj **hit_obj);
+bool rt_object_list_hit(ray_t *ray, float t_min, float t_max, hit_record_t *rec,
+                        struct rt_obj **hit_obj);
 
 #endif

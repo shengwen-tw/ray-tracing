@@ -1,6 +1,7 @@
+#include <stdbool.h>
 #include "vector3.h"
-#include "sphere.h"
 #include "rt_objects.h"
+#include "ray_tracing.h"
 
 struct rt_obj *object_list_start;
 
@@ -48,7 +49,7 @@ void hittable_list_clear(void)
 	object_list_start = NULL;
 }
 
-void hittable_list_add(struct rt_obj *new_obj)
+void rt_object_list_add(struct rt_obj *new_obj)
 {
 	/* list is clear, push first element */
 	if(object_list_start == NULL) {
@@ -70,7 +71,7 @@ void hittable_list_add(struct rt_obj *new_obj)
 	}
 }
 
-bool hittable_list_hit(ray_t *ray, float t_min, float t_max, hit_record_t *rec,
+bool rt_object_list_hit(ray_t *ray, float t_min, float t_max, hit_record_t *rec,
                        struct rt_obj **hit_obj)
 {
 	if(object_list_start == NULL) return false;
