@@ -3,10 +3,9 @@
 #include "color.h"
 #include "ray.h"
 #include "sphere.h"
-#include "hittable_objects.h"
+#include "rt_objects.h"
 #include "camera.h"
 #include "common.h"
-#include "materials.h"
 
 int main(void)
 {
@@ -18,19 +17,19 @@ int main(void)
 	int max_depth = 50;
 
 	/* world */
-	struct hittable_obj rt_obj1;
+	struct rt_obj rt_obj1;
 	rt_object_set_sphere_shape(&rt_obj1, 0.0f, -100.5f, -1.0f, 100.0f);
 	rt_object_set_difuse_material(&rt_obj1, 0.8f, 0.8f, 0.0f);
 
-	struct hittable_obj rt_obj2;
+	struct rt_obj rt_obj2;
 	rt_object_set_sphere_shape(&rt_obj2, 0.0f, 0.0f, -1.0f, 0.5f);
 	rt_object_set_difuse_material(&rt_obj2, 0.7f, 0.3f, 0.3f);
 
-	struct hittable_obj rt_obj3;
+	struct rt_obj rt_obj3;
 	rt_object_set_sphere_shape(&rt_obj3, -1.0f, 0.0f, -1.0f, 0.5f);
 	rt_object_set_metal_material(&rt_obj3, 0.8f, 0.8f, 0.8f, 0.3f);
 
-	struct hittable_obj rt_obj4;
+	struct rt_obj rt_obj4;
 	rt_object_set_sphere_shape(&rt_obj4, 1.0f, 0.0f, -1.0f, 0.5f);
 	rt_object_set_metal_material(&rt_obj4, 0.8f, 0.6f, 0.2f, 1.0f);
 

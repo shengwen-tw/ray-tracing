@@ -1,14 +1,13 @@
 #include "vector3.h"
 #include "sphere.h"
-#include "hittable_objects.h"
-#include "materials.h"
+#include "rt_objects.h"
 
-struct hittable_obj *object_list_start;
+struct rt_obj *object_list_start;
 
 /*---------------*
  * shape setting *
  *---------------*/
-void rt_object_set_sphere_shape(struct hittable_obj *obj,
+void rt_object_set_sphere_shape(struct rt_obj *obj,
 	float center_x, float center_y, float center_z, float radius)
 {
 	obj->hittable_type = HITTALBE_TYPE_SPHERE;
@@ -22,7 +21,7 @@ void rt_object_set_sphere_shape(struct hittable_obj *obj,
 /*------------------*
  * material setting *
  *------------------*/
-void rt_object_set_difuse_material(struct hittable_obj *obj,
+void rt_object_set_difuse_material(struct rt_obj *obj,
 	float albedo_red, float albedo_green, float albedo_blue)
 {
 	obj->material = LAMBERTIAN;
@@ -31,7 +30,7 @@ void rt_object_set_difuse_material(struct hittable_obj *obj,
 	obj->albedo.e[2] = albedo_blue;
 }
 
-void rt_object_set_metal_material(struct hittable_obj *obj,
+void rt_object_set_metal_material(struct rt_obj *obj,
 	float albedo_red, float albedo_green, float albedo_blue, float fuzzyness)
 {
 	obj->material = METAL;
@@ -49,7 +48,7 @@ void hittable_list_clear(void)
 	object_list_start = NULL;
 }
 
-void hittable_list_add(struct hittable_obj *new_obj)
+void hittable_list_add(struct rt_obj *new_obj)
 {
 	/* list is clear, push first element */
 	if(object_list_start == NULL) {
@@ -58,7 +57,7 @@ void hittable_list_add(struct hittable_obj *new_obj)
 		return;
 	}
 
-	struct hittable_obj *list_ptr = object_list_start;
+	struct rt_obj *list_ptr = object_list_start;
 
 	while(1) {
 		if(list_ptr->next == NULL) {
@@ -72,7 +71,7 @@ void hittable_list_add(struct hittable_obj *new_obj)
 }
 
 bool hittable_list_hit(ray_t *ray, float t_min, float t_max, hit_record_t *rec,
-                       struct hittable_obj **hit_obj)
+                       struct rt_obj **hit_obj)
 {
 	if(object_list_start == NULL) return false;
 
@@ -80,7 +79,7 @@ bool hittable_list_hit(ray_t *ray, float t_min, float t_max, hit_record_t *rec,
 	bool hit_anything = false;
 	float closest_so_far = t_max;
 
-	struct hittable_obj *list_ptr = object_list_start;
+	struct rt_obj *list_ptr = object_list_start;
 	bool hit_test = false;
 	while(1) {
 		switch(list_ptr->hittable_type) {

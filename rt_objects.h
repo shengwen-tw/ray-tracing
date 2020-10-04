@@ -8,7 +8,7 @@ enum {
 	HITTALBE_TYPE_SPHERE
 };
 
-struct hittable_obj {
+struct rt_obj {
 	int hittable_type;
 	sphere_t sphere;
 
@@ -18,21 +18,21 @@ struct hittable_obj {
 	float metal_fuzzyness;
 	float light_attenuation;
 
-	struct hittable_obj *next;
+	struct rt_obj *next;
 };
 
-void rt_object_set_sphere_shape(struct hittable_obj *new_obj,
+void rt_object_set_sphere_shape(struct rt_obj *new_obj,
 	float center_x, float center_y, float center_z, float radius);
 
-void rt_object_set_difuse_material(struct hittable_obj *obj,
+void rt_object_set_difuse_material(struct rt_obj *obj,
         float albedo_red, float albedo_green, float albedo_blue);
-void rt_object_set_metal_material(struct hittable_obj *obj,
+void rt_object_set_metal_material(struct rt_obj *obj,
         float albedo_red, float albedo_green, float albedo_blue, float fuzzyness);
 
 void hittable_list_clear(void);
-void hittable_list_add(struct hittable_obj *new_obj);
+void hittable_list_add(struct rt_obj *new_obj);
 
 bool hittable_list_hit(ray_t *ray, float t_min, float t_max, hit_record_t *rec,
-                       struct hittable_obj **hit_obj);
+                       struct rt_obj **hit_obj);
 
 #endif

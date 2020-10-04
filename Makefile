@@ -3,10 +3,9 @@ SRC=main.c \
 	color.c \
 	ray.c \
 	sphere.c \
-	hittable_objects.c \
+	rt_objects.c \
 	camera.c \
 	common.c \
-	materials.c
 
 CFLAGS=-I./
 

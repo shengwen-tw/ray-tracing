@@ -2,25 +2,16 @@
 #include <math.h>
 #include "ray.h"
 #include "color.h"
-#include "hittable_objects.h"
-#include "materials.h"
+#include "rt_objects.h"
 
+//initialize ray's origin and directional vector
 void ray_init(ray_t *ray, vec3_t *origin, vec3_t *direction)
 {
 	ray->orig = *origin;
 	ray->dir = *direction;
 }
 
-void ray_get_origin(ray_t *ray, point3_t *orig)
-{
-	*orig = ray->orig;
-}
-
-void ray_get_direction(ray_t *ray, vec3_t *dir)
-{
-	*dir = ray->dir;
-}
-
+//calculate a point on a ray
 void ray_at(ray_t *ray, float t, point3_t *point_result)
 {
 	vec3_t t_times_dir;
@@ -30,6 +21,23 @@ void ray_at(ray_t *ray, float t, point3_t *point_result)
 	vec3_add((vec3_t *)&ray->orig, &t_times_dir, (vec3_t *)point_result);
 }
 
+//set normal vector of a shape
+void set_face_normal(hit_record_t *rec, ray_t *ray, vec3_t *outward_normal)
+{
+	rec->front_face = vec3_dot_product(&ray->dir, outward_normal) < 0.0f;
+
+	if(rec->front_face == true) {
+		rec->normal = *outward_normal;
+	} else {
+		vec3_t neg_outward_normal;
+		vec3_negate(outward_normal, &neg_outward_normal);
+		rec->normal = neg_outward_normal;
+	}
+}
+
+/*--------------------------*
+ * ray - shape intersection *
+ *--------------------------*/
 float hit_sphere(point3_t *center, float radius, ray_t *ray)
 {
 	vec3_t oc;
@@ -47,24 +55,58 @@ float hit_sphere(point3_t *center, float radius, ray_t *ray)
 	}
 }
 
-void set_face_normal(hit_record_t *rec, ray_t *ray, vec3_t *outward_normal)
+/*------------------*
+ * light scattering *
+ *------------------*/
+bool lambertian_scattering(ray_t *ray_in, hit_record_t *rec, ray_t *scattered_ray)
 {
-	rec->front_face = vec3_dot_product(&ray->dir, outward_normal) < 0.0f;
+	vec3_t random_vec;
+	//vec3_random_in_unit_sphere(&random_vec);
+	//vec3_random_unit_vector(&random_vec);
+	vec3_random_in_hemisphere(&random_vec, &rec->normal);
 
-	if(rec->front_face == true) {
-		rec->normal = *outward_normal;
-	} else {
-		vec3_t neg_outward_normal;
-		vec3_negate(outward_normal, &neg_outward_normal);
-		rec->normal = neg_outward_normal;
-	}
+	point3_t target;
+	vec3_add(&rec->p, &rec->normal, &target);
+	vec3_add(&target, &random_vec, &target);
+
+	vec3_t scattered_ray_dir;
+	vec3_sub(&target, &rec->p, &scattered_ray_dir);
+
+	ray_init(scattered_ray, &rec->p, &scattered_ray_dir);
+
+	return true;
 }
 
+bool metal_scattering(ray_t *ray_in, hit_record_t *rec, ray_t *scattered_ray, float fuzzyness)
+{
+	/* create reflection */	
+	vec3_t r_in_dir_unit;
+	vec3_unit_vector(&ray_in->dir, &r_in_dir_unit);
+
+	vec3_t reflected_vec;
+	vec3_reflect(&r_in_dir_unit, &rec->normal, &reflected_vec);
+
+	/* create fuzzyness */
+	vec3_t random_vec, fuzzy_random_vec;
+	vec3_random_unit_vector(&random_vec);
+	vec3_scaling(fuzzyness, &random_vec, &fuzzy_random_vec);
+
+	/* scattered ray vector = reflection vector + fuzzy random vector */
+	vec3_t fuzzy_reflected_vec;
+	vec3_add(&reflected_vec, &fuzzy_random_vec, &fuzzy_reflected_vec);
+	ray_init(scattered_ray, &rec->p, &fuzzy_reflected_vec);
+
+	return (vec3_dot_product(&reflected_vec, &rec->normal) > 0.0f);
+}
+
+/*-------------*
+ * ray tracing *
+ *-------------*/
 void ray_color(ray_t *ray, color_t *pixel_color, int depth)
 {
 	hit_record_t rec;
 	int hit_material;
-	struct hittable_obj *hit_obj;
+	struct rt_obj *hit_obj;
 
 	/* depth count == 0 means there is no much light energy left more */
 	if(depth <= 0) {
