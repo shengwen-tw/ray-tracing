@@ -3,6 +3,7 @@
 #include "ray.h"
 #include "color.h"
 #include "hittable_objects.h"
+#include "materials.h"
 
 void ray_init(ray_t *ray, vec3_t *origin, vec3_t *direction)
 {
@@ -62,6 +63,8 @@ void set_face_normal(hit_record_t *rec, ray_t *ray, vec3_t *outward_normal)
 void ray_color(ray_t *ray, color_t *pixel_color, int depth)
 {
 	hit_record_t rec;
+	int hit_material;
+	struct hittable_obj *hit_obj;
 
 	/* depth count == 0 means there is no much light energy left more */
 	if(depth <= 0) {
@@ -69,30 +72,32 @@ void ray_color(ray_t *ray, color_t *pixel_color, int depth)
 		return;
 	}
 
+	bool valid_scattering;
 	/* recursively refract the light until reaching the max depth */
-	if(hittable_list_hit(ray, 0.001, INFINITY, &rec) == true) {
-		vec3_t random_vec;
-		//vec3_random_in_unit_sphere(&random_vec);
-		//vec3_random_unit_vector(&random_vec);
-		vec3_random_in_hemisphere(&random_vec, &rec.normal);
-
-		point3_t target;
-		vec3_add(&rec.p, &rec.normal, &target);
-		vec3_add(&target, &random_vec, &target);
-
-		vec3_t sub_ray_dir;
-		vec3_sub(&target, &rec.p, &sub_ray_dir);
-
+	if(hittable_list_hit(ray, 0.001, INFINITY, &rec, &hit_obj) == true) {
 		ray_t sub_ray;
-		ray_init(&sub_ray, &rec.p, &sub_ray_dir);
 
-		ray_color(&sub_ray, pixel_color, depth-1);
+		switch(hit_obj->material) {
+		case LAMBERTIAN:
+			valid_scattering = lambertian_scattering(ray, &rec, &sub_ray);
+			break;
+		case METAL:
+			valid_scattering = metal_scattering(ray, &rec, &sub_ray,
+                                                            hit_obj->metal_fuzzyness);
+		default:
+			break;
+		}
 
-		pixel_color->e[0] *= 0.5;
-		pixel_color->e[1] *= 0.5;
-		pixel_color->e[2] *= 0.5;
+		if(valid_scattering == true) {
+			ray_color(&sub_ray, pixel_color, depth-1);
 
-		return;
+			/* apply attenuation (albedo) of color after every scattering */
+			pixel_color->e[0] *= hit_obj->albedo.e[0];
+			pixel_color->e[1] *= hit_obj->albedo.e[1];
+			pixel_color->e[2] *= hit_obj->albedo.e[2];
+
+			return;
+		}
 	}
 
 	vec3_t unit_ray_dir;

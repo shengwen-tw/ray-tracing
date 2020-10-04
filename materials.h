@@ -8,6 +8,7 @@ enum {
 	METAL,
 } MATERIAL_TYPE;
 
-void scatter(ray_t *ray_in, hit_record_t *rec, color_t *attenuation, ray_t *scattered);
+bool lambertian_scattering(ray_t *ray_in, hit_record_t *rec, ray_t *scattered_ray);
+bool metal_scattering(ray_t *ray_in, hit_record_t *rec, ray_t *scattered_ray, float fuzzyness);
 
 #endif

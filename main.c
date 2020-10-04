@@ -18,11 +18,26 @@ int main(void)
 	int max_depth = 50;
 
 	/* world */
-	struct hittable_obj hittable_obj1, hittable_obj2; 
-	hittalbe_object_sphere_init(&hittable_obj1, 0, 0, -1, 0.5f, LAMBERTIAN);
-	hittalbe_object_sphere_init(&hittable_obj2, 0, -100.5, -1, 100.0f, LAMBERTIAN);
-	hittable_list_add(&hittable_obj2);
-	hittable_list_add(&hittable_obj1);
+	struct hittable_obj rt_obj1;
+	rt_object_set_sphere_shape(&rt_obj1, 0.0f, -100.5f, -1.0f, 100.0f);
+	rt_object_set_difuse_material(&rt_obj1, 0.8f, 0.8f, 0.0f);
+
+	struct hittable_obj rt_obj2;
+	rt_object_set_sphere_shape(&rt_obj2, 0.0f, 0.0f, -1.0f, 0.5f);
+	rt_object_set_difuse_material(&rt_obj2, 0.7f, 0.3f, 0.3f);
+
+	struct hittable_obj rt_obj3;
+	rt_object_set_sphere_shape(&rt_obj3, -1.0f, 0.0f, -1.0f, 0.5f);
+	rt_object_set_metal_material(&rt_obj3, 0.8f, 0.8f, 0.8f, 0.3f);
+
+	struct hittable_obj rt_obj4;
+	rt_object_set_sphere_shape(&rt_obj4, 1.0f, 0.0f, -1.0f, 0.5f);
+	rt_object_set_metal_material(&rt_obj4, 0.8f, 0.6f, 0.2f, 1.0f);
+
+	hittable_list_add(&rt_obj1);
+	hittable_list_add(&rt_obj2);
+	hittable_list_add(&rt_obj3);
+	hittable_list_add(&rt_obj4);
 
 	/* camera */
 	camera_t camera;

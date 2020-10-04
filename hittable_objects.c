@@ -1,20 +1,49 @@
+#include "vector3.h"
 #include "sphere.h"
 #include "hittable_objects.h"
+#include "materials.h"
 
 struct hittable_obj *object_list_start;
 
-void hittalbe_object_sphere_init(struct hittable_obj *new_obj,
-	float center_x, float center_y, float center_z, float radius, int material)
+/*---------------*
+ * shape setting *
+ *---------------*/
+void rt_object_set_sphere_shape(struct hittable_obj *obj,
+	float center_x, float center_y, float center_z, float radius)
 {
-	new_obj->hittable_type = HITTALBE_TYPE_SPHERE;
-	new_obj->sphere.center.e[0] = center_x ;
-	new_obj->sphere.center.e[1] = center_y;
-	new_obj->sphere.center.e[2] = center_z;
-	new_obj->sphere.radius = radius;
-	new_obj->material = material;
-	new_obj->next = NULL;
+	obj->hittable_type = HITTALBE_TYPE_SPHERE;
+	obj->sphere.center.e[0] = center_x ;
+	obj->sphere.center.e[1] = center_y;
+	obj->sphere.center.e[2] = center_z;
+	obj->sphere.radius = radius;
+	obj->next = NULL;
 }
 
+/*------------------*
+ * material setting *
+ *------------------*/
+void rt_object_set_difuse_material(struct hittable_obj *obj,
+	float albedo_red, float albedo_green, float albedo_blue)
+{
+	obj->material = LAMBERTIAN;
+	obj->albedo.e[0] = albedo_red;
+	obj->albedo.e[1] = albedo_green;
+	obj->albedo.e[2] = albedo_blue;
+}
+
+void rt_object_set_metal_material(struct hittable_obj *obj,
+	float albedo_red, float albedo_green, float albedo_blue, float fuzzyness)
+{
+	obj->material = METAL;
+	obj->albedo.e[0] = albedo_red;
+	obj->albedo.e[1] = albedo_green;
+	obj->albedo.e[2] = albedo_blue;
+	obj->metal_fuzzyness = fuzzyness;
+}
+
+/*-------------*
+ * object list *
+ *-------------*/
 void hittable_list_clear(void)
 {
 	object_list_start = NULL;
@@ -42,7 +71,8 @@ void hittable_list_add(struct hittable_obj *new_obj)
 	}
 }
 
-bool hittable_list_hit(ray_t *ray, float t_min, float t_max, hit_record_t *rec)
+bool hittable_list_hit(ray_t *ray, float t_min, float t_max, hit_record_t *rec,
+                       struct hittable_obj **hit_obj)
 {
 	if(object_list_start == NULL) return false;
 
@@ -62,6 +92,7 @@ bool hittable_list_hit(ray_t *ray, float t_min, float t_max, hit_record_t *rec)
 		}
 
 		if(hit_test == true) {
+			*hit_obj = list_ptr;
 			hit_anything = true;
 			closest_so_far = tmp_rec.t;
 			*rec = tmp_rec;
