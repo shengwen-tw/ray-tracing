@@ -3,10 +3,15 @@
 
 struct hittable_obj *object_list_start;
 
-void hittalbe_object_sphere_init(struct hittable_obj *new_obj, sphere_t *sphere)
+void hittalbe_object_sphere_init(struct hittable_obj *new_obj,
+	float center_x, float center_y, float center_z, float radius, int material)
 {
 	new_obj->hittable_type = HITTALBE_TYPE_SPHERE;
-	new_obj->sphere = *sphere;
+	new_obj->sphere.center.e[0] = center_x ;
+	new_obj->sphere.center.e[1] = center_y;
+	new_obj->sphere.center.e[2] = center_z;
+	new_obj->sphere.radius = radius;
+	new_obj->material = material;
 	new_obj->next = NULL;
 }
 

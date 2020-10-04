@@ -10,11 +10,13 @@ enum {
 struct hittable_obj {
 	int hittable_type;
 	sphere_t sphere;
+	int material;
 
 	struct hittable_obj *next;
 };
 
-void hittalbe_object_sphere_init(struct hittable_obj *new_obj, sphere_t *sphere);
+void hittalbe_object_sphere_init(struct hittable_obj *new_obj,
+	float center_x, float center_y, float center_z, float radius, int material);
 
 void hittable_list_clear(void);
 void hittable_list_add(struct hittable_obj *new_obj);

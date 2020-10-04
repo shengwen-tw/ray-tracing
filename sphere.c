@@ -4,12 +4,6 @@
 #include "ray.h"
 #include "sphere.h"
 
-void sphere_init(sphere_t *sphere, point3_t *center, float r)
-{
-	sphere->center = *center;
-	sphere->radius = r;
-}
-
 bool sphere_hit(sphere_t *sphere, ray_t *ray, float t_min, float t_max, hit_record_t *rec)
 {
         vec3_t oc;

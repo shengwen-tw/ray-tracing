@@ -6,27 +6,21 @@
 #include "hittable_objects.h"
 #include "camera.h"
 #include "common.h"
+#include "materials.h"
 
 int main(void)
 {
 	/* image */
 	float aspect_ratio = 16.0 / 9.0;
-	int image_width = 1920;
+	int image_width = 400;
 	int image_height = (int)((float)(image_width) / aspect_ratio);
 	int anti_aliasing_samples = 100;
 	int max_depth = 50;
 
 	/* world */
-	sphere_t ball1, ball2;
-	point3_t ball1_orig, ball2_orig;
-	point3_set(&ball1_orig, 0, 0, -1);
-	point3_set(&ball2_orig, 0, -100.5, -1);
-	sphere_init(&ball1, &ball1_orig, 0.5f);
-	sphere_init(&ball2, &ball2_orig, 100.0f);
-
 	struct hittable_obj hittable_obj1, hittable_obj2; 
-	hittalbe_object_sphere_init(&hittable_obj1, &ball1);
-	hittalbe_object_sphere_init(&hittable_obj2, &ball2);
+	hittalbe_object_sphere_init(&hittable_obj1, 0, 0, -1, 0.5f, LAMBERTIAN);
+	hittalbe_object_sphere_init(&hittable_obj2, 0, -100.5, -1, 100.0f, LAMBERTIAN);
 	hittable_list_add(&hittable_obj2);
 	hittable_list_add(&hittable_obj1);
 

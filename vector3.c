@@ -164,3 +164,12 @@ void vec3_random_in_hemisphere(vec3_t *random_vec, vec3_t *normal)
 		return;
 	}
 }
+
+void vec3_reflect(vec3_t *vec_in, vec3_t *normal, vec3_t *vec_reflect)
+{
+	float float_tmp;
+	vec3_t vec_tmp;
+	float_tmp = 2.0f * vec3_dot_product(vec_in, normal);
+	vec3_scaling(float_tmp, normal, &vec_tmp);
+	vec3_sub(vec_in, &vec_tmp, vec_reflect);
+}

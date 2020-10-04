@@ -5,7 +5,8 @@ SRC=main.c \
 	sphere.c \
 	hittable_objects.c \
 	camera.c \
-	common.c
+	common.c \
+	materials.c
 
 CFLAGS=-I./
 
