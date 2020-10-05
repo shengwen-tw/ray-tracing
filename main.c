@@ -22,15 +22,15 @@ int main(void)
 
 	struct rt_obj rt_obj2;
 	rt_object_set_sphere_shape(&rt_obj2, 0.0f, 0.0f, -1.0f, 0.5f);
-	rt_object_set_difuse_material(&rt_obj2, 0.7f, 0.3f, 0.3f);
+	rt_object_set_difuse_material(&rt_obj2, 0.1f, 0.2f, 0.5f);
 
 	struct rt_obj rt_obj3;
-	rt_object_set_sphere_shape(&rt_obj3, -1.0f, 0.0f, -1.0f, 0.5f);
-	rt_object_set_metal_material(&rt_obj3, 0.8f, 0.8f, 0.8f, 0.3f);
+	rt_object_set_sphere_shape(&rt_obj3, -1.0f, 0.0f, -1.0f, -0.5f);
+	rt_object_set_glass_material(&rt_obj3, 1.5f);
 
 	struct rt_obj rt_obj4;
 	rt_object_set_sphere_shape(&rt_obj4, 1.0f, 0.0f, -1.0f, 0.5f);
-	rt_object_set_metal_material(&rt_obj4, 0.8f, 0.6f, 0.2f, 1.0f);
+	rt_object_set_metal_material(&rt_obj4, 0.8f, 0.6f, 0.2f, 0.0f);
 
 	rt_object_list_add(&rt_obj1);
 	rt_object_list_add(&rt_obj2);

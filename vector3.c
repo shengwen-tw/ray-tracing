@@ -173,3 +173,21 @@ void vec3_reflect(vec3_t *vec_in, vec3_t *normal, vec3_t *vec_reflect)
 	vec3_scaling(float_tmp, normal, &vec_tmp);
 	vec3_sub(vec_in, &vec_tmp, vec_reflect);
 }
+
+void vec3_refract(vec3_t *uv, vec3_t *n, float etai_over_etat, vec3_t *refract_vec)
+{
+	vec3_t neg_uv;
+	vec3_negate(uv, &neg_uv);
+
+	float cos_theta = vec3_dot_product(&neg_uv, n);
+
+	vec3_t n_cos_theta, vec_tmp, r_out_prep;
+	vec3_scaling(cos_theta, n, &n_cos_theta);
+	vec3_add(uv, &n_cos_theta, &vec_tmp);
+	vec3_scaling(etai_over_etat, &vec_tmp, &r_out_prep);
+
+	vec3_t r_out_parallel;
+	vec3_scaling(-sqrt(fabs(1.0f - vec3_length_squared(&r_out_prep))), n, &r_out_parallel);
+
+	vec3_add(&r_out_prep, &r_out_parallel, refract_vec);
+}

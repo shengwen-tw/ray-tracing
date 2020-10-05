@@ -3,6 +3,7 @@
 #include "ray_tracing.h"
 #include "color.h"
 #include "rt_objects.h"
+#include "common.h"
 
 //initialize ray's origin and directional vector
 void ray_init(ray_t *ray, vec3_t *origin, vec3_t *direction)
@@ -33,6 +34,13 @@ void set_face_normal(hit_record_t *rec, ray_t *ray, vec3_t *outward_normal)
 		vec3_negate(outward_normal, &neg_outward_normal);
 		rec->normal = neg_outward_normal;
 	}
+}
+
+float reflectance_shicks_method(float consine, float ref_index)
+{
+	float r0 = (1.0f - ref_index) / (1.0f + ref_index);
+	r0 = r0 * r0;
+	return r0 + ((1.0f - r0) * pow(1.0f - consine, 5.0f));
 }
 
 /*--------------------------*
@@ -133,6 +141,36 @@ bool metal_scattering(ray_t *ray_in, hit_record_t *rec, ray_t *scattered_ray, fl
 	return (vec3_dot_product(&reflected_vec, &rec->normal) > 0.0f);
 }
 
+bool glass_scattering(ray_t *ray_in, hit_record_t *rec, ray_t *scattered_ray, float ir)
+{
+	float refraction_ratio = rec->front_face ? (1.0f / ir) : ir;
+	
+	vec3_t unit_dir;
+	vec3_unit_vector(&ray_in->dir, &unit_dir);
+
+	vec3_t neg_unit_dir;
+	vec3_negate(&unit_dir, &neg_unit_dir);
+
+	float cos_theta = fmin(vec3_dot_product(&neg_unit_dir, &rec->normal), 1.0f);
+	float sin_theta = sqrt(1.0f - cos_theta*cos_theta);
+	
+	bool cannot_refract = refraction_ratio * sin_theta > 1.0f;
+
+	vec3_t direction;
+	if(cannot_refract == true ||
+	   reflectance_shicks_method(cos_theta, refraction_ratio) > random_float()) {
+		vec3_reflect(&unit_dir, &rec->normal, &direction);
+	} else {
+		vec3_refract(&unit_dir, &rec->normal, refraction_ratio, &direction);
+	}
+	
+	vec3_refract(&unit_dir, &rec->normal, refraction_ratio, &direction);
+
+	ray_init(scattered_ray, &rec->p, &direction);
+
+	return true;
+}
+
 /*-------------*
  * ray tracing *
  *-------------*/
@@ -160,6 +198,10 @@ void ray_color(ray_t *ray, color_t *pixel_color, int depth)
 		case METAL:
 			valid_scattering = metal_scattering(ray, &rec, &sub_ray,
                                                             hit_obj->metal_fuzzyness);
+			break;
+		case GLASS:
+			valid_scattering = glass_scattering(ray, &rec, &sub_ray,
+                                                            hit_obj->glass_ir);
 		default:
 			break;
 		}

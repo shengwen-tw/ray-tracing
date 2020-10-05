@@ -8,6 +8,7 @@
 enum {
         LAMBERTIAN,
         METAL,
+	GLASS
 } MATERIAL_TYPE;
 
 typedef struct {

@@ -27,6 +27,7 @@ void vec3_random_in_unit_sphere(vec3_t *vec);
 void vec3_random_unit_vector(vec3_t *vec);
 void vec3_random_in_hemisphere(vec3_t *random_vec, vec3_t *normal);
 void vec3_reflect(vec3_t *vec_in, vec3_t *normal, vec3_t *vec_reflect);
+void vec3_refract(vec3_t *uv, vec3_t *n, float etai_over_etat, vec3_t *refract_vec);
 
 typedef vec3_t point3_t;
 

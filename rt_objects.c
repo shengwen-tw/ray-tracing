@@ -41,6 +41,15 @@ void rt_object_set_metal_material(struct rt_obj *obj,
 	obj->metal_fuzzyness = fuzzyness;
 }
 
+void rt_object_set_glass_material(struct rt_obj *obj, float index_of_refraction)
+{
+	obj->material = GLASS;
+	obj->albedo.e[0] = 1.0f;
+	obj->albedo.e[1] = 1.0f;
+	obj->albedo.e[2] = 1.0f;
+	obj->glass_ir = index_of_refraction;
+}
+
 /*-------------*
  * object list *
  *-------------*/
