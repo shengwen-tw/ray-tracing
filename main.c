@@ -39,7 +39,18 @@ int main(void)
 
 	/* camera */
 	camera_t camera;
-	camera_init(&camera);
+
+	point3_t look_from;
+	vec3_set(&look_from, -2.0f, 2.0f, 1.0f);
+
+	point3_t look_at;
+	vec3_set(&look_at, 0.0f, 0.0f, -1.0f);
+
+	vec3_t vup;
+	vec3_set(&vup, 0.0f, 1.0f, 0.0f);
+
+	//camera_set_default(&camera);
+	camera_set(&camera, &look_from, &look_at, &vup, 90, aspect_ratio);
 
 	printf("P3\n%d %d\n255\n", image_width, image_height);
 

@@ -11,7 +11,10 @@ typedef struct {
 	vec3_t vertical;
 } camera_t;
 
-void camera_init(camera_t *camera);
+void camera_set_default(camera_t *camera);
+void camera_set(camera_t *camera, point3_t *look_from, point3_t *look_at,
+                vec3_t *vup, float vfov, float aspect_ratio);
+
 void camera_get_ray(camera_t *camera, ray_t *ray, float u, float v);
 
 #endif
