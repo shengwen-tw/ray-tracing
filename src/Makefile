@@ -2,6 +2,7 @@ EXECUTABLE=ray_tracing
 
 CFLAGS=-O2
 CFLAGS+=-I./
+CFLAGS+=-I./lib/stb
 
 SRC=main.c \
 	vector3.c \
@@ -21,7 +22,9 @@ $(TEXTURES_PPM): $(TEXTURES)
 #compile the ray tracing program
 $(EXECUTABLE): $(SRC)
 	gcc $(CFLAGS) -o $@ $^ $(LDFLAGS)
-	./ray_tracing > output.ppm
+
+run:
+	@./$(EXECUTABLE) > output.ppm
 
 show:
 	eog output.ppm
@@ -34,4 +37,4 @@ clean:
 	rm -rf output.ppm
 	rm -rf output.png
 
-.PHONY: all show clean png
+.PHONY: run show clean png

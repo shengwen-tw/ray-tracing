@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdint.h>
 #include "vector3.h"
 #include "color.h"
 #include "rt_objects.h"
@@ -6,8 +7,15 @@
 #include "camera.h"
 #include "common.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 int main(void)
 {
+	int width, height, bpp;
+	uint8_t* rgb_image = stbi_load("./textures/earthmap.jpg", &width, &height, &bpp, 3);
+	fprintf(stderr, "texture image: \"./textures/earthmap.jpg\" is loaded\n");
+
 	/* image */
 	float aspect_ratio = 16.0 / 9.0;
 	int image_width = 400;
