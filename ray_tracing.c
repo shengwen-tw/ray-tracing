@@ -97,6 +97,31 @@ bool sphere_hit(sphere_t *sphere, ray_t *ray, float t_min, float t_max, hit_reco
 	return false;
 }
 
+bool rectangle_hit(rectangle_t *rectangle, ray_t *ray, float t0, float t1,
+		   hit_record_t *rec)
+{
+	float t = (rectangle->k - vec3_get_z(&ray->orig)) / vec3_get_z(&ray->dir);
+
+	float ray_x = vec3_get_x(&ray->orig) + vec3_get_x(&ray->dir) * t;
+	float ray_y = vec3_get_y(&ray->orig) + vec3_get_y(&ray->dir) * t;
+
+	if(ray_x < rectangle->x0 || ray_x > rectangle->x1 ||
+	   ray_y < rectangle->y0 || ray_y > rectangle->y1) {
+		return false;
+	}
+
+	rec->u = (ray_x - rectangle->x0) / (rectangle->x1 - rectangle->x0);
+	rec->v = (ray_y - rectangle->y0) / (rectangle->y1 - rectangle->y0);
+	rec->t = t;
+
+	vec3_t outward_normal;
+	vec3_set(&outward_normal, 0.0f, 0.0f, 1.0f);
+
+	ray_at(ray, t, &rec->p);
+
+	return true;
+}
+
 /*------------------*
  * light scattering *
  *------------------*/

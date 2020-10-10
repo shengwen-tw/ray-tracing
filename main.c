@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include "vector3.h"
 #include "color.h"
-#include "ray_tracing.h"
 #include "rt_objects.h"
+#include "ray_tracing.h"
 #include "camera.h"
 #include "common.h"
 
@@ -32,19 +32,26 @@ int main(void)
 	rt_object_set_sphere_shape(&rt_obj4, 1.0f, 0.0f, -1.0f, 0.5f);
 	rt_object_set_metal_material(&rt_obj4, 0.8f, 0.6f, 0.2f, 0.0f);
 
+	struct rt_obj rt_obj5;
+	rt_object_set_rectangle_shape(&rt_obj5, 3.0f, 1.0f, 5.0f, 2.5f, -2.0f);
+	rt_object_set_difuse_material(&rt_obj5, 0.8f, 0.8f, 0.0f);
+
 	rt_object_list_add(&rt_obj1);
 	rt_object_list_add(&rt_obj2);
 	rt_object_list_add(&rt_obj3);
 	rt_object_list_add(&rt_obj4);
+	rt_object_list_add(&rt_obj5);
 
 	/* camera */
 	camera_t camera;
 
 	point3_t look_from;
 	vec3_set(&look_from, -2.0f, 2.0f, 1.0f);
+//	vec3_set(&look_from, 26.0f, 3.0f, 6.0f);
 
 	point3_t look_at;
 	vec3_set(&look_at, 0.0f, 0.0f, -1.0f);
+//	vec3_set(&look_at, 0.0f, 2.0f, 0.0f);
 
 	vec3_t vup;
 	vec3_set(&vup, 0.0f, 1.0f, 0.0f);

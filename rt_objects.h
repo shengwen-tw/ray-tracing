@@ -5,12 +5,14 @@
 #include "ray_tracing.h"
 
 enum {
-	HITTALBE_TYPE_SPHERE
+	RT_SHAPE_SPHERE,
+	RT_SHAPE_RECTANGLE
 };
 
 struct rt_obj {
 	int hittable_type;
 	sphere_t sphere;
+	rectangle_t rectangle;
 
 	color_t albedo;
 
@@ -25,6 +27,8 @@ struct rt_obj {
 /* shape setters */
 void rt_object_set_sphere_shape(struct rt_obj *new_obj,
 	float center_x, float center_y, float center_z, float radius);
+void rt_object_set_rectangle_shape(struct rt_obj *obj,
+        float x0, float y0, float x1, float y1, float k);
 
 /* material setters */
 void rt_object_set_difuse_material(struct rt_obj *obj,

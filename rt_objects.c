@@ -11,11 +11,23 @@ struct rt_obj *object_list_start;
 void rt_object_set_sphere_shape(struct rt_obj *obj,
 	float center_x, float center_y, float center_z, float radius)
 {
-	obj->hittable_type = HITTALBE_TYPE_SPHERE;
+	obj->hittable_type = RT_SHAPE_SPHERE;
 	obj->sphere.center.e[0] = center_x ;
 	obj->sphere.center.e[1] = center_y;
 	obj->sphere.center.e[2] = center_z;
 	obj->sphere.radius = radius;
+	obj->next = NULL;
+}
+
+void rt_object_set_rectangle_shape(struct rt_obj *obj,
+        float x0, float y0, float x1, float y1, float k)
+{
+	obj->hittable_type = RT_SHAPE_RECTANGLE;
+	obj->rectangle.x0 = x0;
+	obj->rectangle.y0 = y0;
+	obj->rectangle.x1 = x1;
+	obj->rectangle.y1 = y1;
+	obj->rectangle.k = k;
 	obj->next = NULL;
 }
 
@@ -93,8 +105,13 @@ bool rt_object_list_hit(ray_t *ray, float t_min, float t_max, hit_record_t *rec,
 	bool hit_test = false;
 	while(1) {
 		switch(list_ptr->hittable_type) {
-		case HITTALBE_TYPE_SPHERE:
-			hit_test = sphere_hit(&list_ptr->sphere, ray, t_min, closest_so_far, &tmp_rec);
+		case RT_SHAPE_SPHERE:
+			hit_test = sphere_hit(&list_ptr->sphere, ray, t_min,
+					      closest_so_far, &tmp_rec);
+			break;
+		case RT_SHAPE_RECTANGLE:
+			hit_test = rectangle_hit(&list_ptr->rectangle, ray, t_min,
+						 closest_so_far, &tmp_rec);
 			break;
 		default:
 			break;
