@@ -11,6 +11,12 @@ enum {
 };
 
 enum {
+	RECTANGLE_XY_PLANE,
+	RECTANGLE_XZ_PLANE,
+	RECTANGLE_YZ_PLANE
+} RECTANGLE_PLANE_FIRECTION;
+
+enum {
 	LAMBERTIAN,
 	METAL,
 	GLASS,
@@ -22,11 +28,11 @@ typedef struct {
 } sphere_t;
 
 typedef struct {
-        float x0;
-        float y0;
-        float x1;
-        float y1;
+	float x0, y0, z0;
+	float x1, y1, z1;
         float k;
+
+	int plane;
 } rectangle_t;
 
 struct rt_obj {
@@ -64,8 +70,10 @@ typedef struct {
 /* shape setters */
 void rt_object_set_sphere_shape(struct rt_obj *new_obj,
 	float center_x, float center_y, float center_z, float radius);
-void rt_object_set_rectangle_shape(struct rt_obj *obj,
-        float x0, float y0, float x1, float y1, float k);
+void rt_object_set_rectangle_shape(struct rt_obj *obj, int plane,
+        float x0, float y0, float z0,
+	float x1, float y1, float z1,
+	float k);
 
 /* material setters */
 void rt_object_set_difuse_material(struct rt_obj *obj,

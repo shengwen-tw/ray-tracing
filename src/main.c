@@ -35,7 +35,10 @@ int main(void)
 	rt_object_set_metal_material(&rt_obj4, 0.8f, 0.6f, 0.2f, 0.0f);
 
 	struct rt_obj rt_obj5;
-	rt_object_set_rectangle_shape(&rt_obj5, 3.0f, -0.5f, 5.0f, 1.0f, -1.0f);
+	rt_object_set_rectangle_shape(&rt_obj5, RECTANGLE_XY_PLANE,
+				      3.0f, -0.5f, 0.0f,
+				      5.0f, 1.0f, 0.0f,
+				      -1.0f);
 	rt_object_set_difuse_material(&rt_obj5, 0.8f, 0.8f, 0.0f);
 	rt_object_set_light_emmision(&rt_obj5, true, 0.5, 0.5, 0.5);
 

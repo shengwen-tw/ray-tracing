@@ -20,15 +20,20 @@ void rt_object_set_sphere_shape(struct rt_obj *obj,
 	obj->next = NULL;
 }
 
-void rt_object_set_rectangle_shape(struct rt_obj *obj,
-        float x0, float y0, float x1, float y1, float k)
+void rt_object_set_rectangle_shape(struct rt_obj *obj, int plane,
+        float x0, float y0, float z0,
+        float x1, float y1, float z1,
+        float k)
 {
 	obj->hittable_type = RT_SHAPE_RECTANGLE;
 	obj->emit_light = false;
+	obj->rectangle.plane = plane;
 	obj->rectangle.x0 = x0;
 	obj->rectangle.y0 = y0;
+	obj->rectangle.z0 = z0;
 	obj->rectangle.x1 = x1;
 	obj->rectangle.y1 = y1;
+	obj->rectangle.z1 = z1;
 	obj->rectangle.k = k;
 	obj->next = NULL;
 }

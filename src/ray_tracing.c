@@ -103,22 +103,66 @@ bool sphere_hit(sphere_t *sphere, ray_t *ray, float t_min, float t_max, hit_reco
 bool rectangle_hit(rectangle_t *rectangle, ray_t *ray, float t0, float t1,
 		   hit_record_t *rec)
 {
-	float t = (rectangle->k - vec3_get_z(&ray->orig)) / vec3_get_z(&ray->dir);
-
-	float ray_x = vec3_get_x(&ray->orig) + vec3_get_x(&ray->dir) * t;
-	float ray_y = vec3_get_y(&ray->orig) + vec3_get_y(&ray->dir) * t;
-
-	if(ray_x < rectangle->x0 || ray_x > rectangle->x1 ||
-	   ray_y < rectangle->y0 || ray_y > rectangle->y1) {
-		return false;
-	}
-
-	rec->u = (ray_x - rectangle->x0) / (rectangle->x1 - rectangle->x0);
-	rec->v = (ray_y - rectangle->y0) / (rectangle->y1 - rectangle->y0);
-	rec->t = t;
-
+	float t;
+	float ray_x, ray_y, ray_z;
 	vec3_t outward_normal;
-	vec3_set(&outward_normal, 0.0f, 0.0f, 1.0f);
+
+	switch(rectangle->plane) {
+	case RECTANGLE_XY_PLANE:
+		t = (rectangle->k - vec3_get_z(&ray->orig)) / vec3_get_z(&ray->dir);
+
+		ray_x = vec3_get_x(&ray->orig) + vec3_get_x(&ray->dir) * t;
+		ray_y = vec3_get_y(&ray->orig) + vec3_get_y(&ray->dir) * t;
+
+		if(ray_x < rectangle->x0 || ray_x > rectangle->x1 ||
+		   ray_y < rectangle->y0 || ray_y > rectangle->y1) {
+			return false;
+		}
+
+		rec->u = (ray_x - rectangle->x0) / (rectangle->x1 - rectangle->x0);
+		rec->v = (ray_y - rectangle->y0) / (rectangle->y1 - rectangle->y0);
+		rec->t = t;
+
+		vec3_set(&outward_normal, 0.0f, 0.0f, 1.0f);
+
+		break;
+	case RECTANGLE_XZ_PLANE:
+		t = (rectangle->k - vec3_get_y(&ray->orig)) / vec3_get_y(&ray->dir);
+
+		ray_x = vec3_get_x(&ray->orig) + vec3_get_x(&ray->dir) * t;
+		ray_z = vec3_get_y(&ray->orig) + vec3_get_z(&ray->dir) * t;
+
+		if(ray_x < rectangle->x0 || ray_x > rectangle->x1 ||
+		   ray_z < rectangle->z0 || ray_z > rectangle->z1) {
+			return false;
+		}
+
+		rec->u = (ray_x - rectangle->x0) / (rectangle->x1 - rectangle->x0);
+		rec->v = (ray_z - rectangle->z0) / (rectangle->z1 - rectangle->z0);
+		rec->t = t;
+
+		vec3_set(&outward_normal, 0.0f, 1.0f, 0.0f);
+
+		break;
+	case RECTANGLE_YZ_PLANE:
+		t = (rectangle->k - vec3_get_x(&ray->orig)) / vec3_get_x(&ray->dir);
+
+		ray_y = vec3_get_y(&ray->orig) + vec3_get_y(&ray->dir) * t;
+		ray_z = vec3_get_z(&ray->orig) + vec3_get_z(&ray->dir) * t;
+
+		if(ray_y < rectangle->y0 || ray_y > rectangle->y1 ||
+		   ray_z < rectangle->z0 || ray_z > rectangle->z1) {
+			return false;
+		}
+
+		rec->u = (ray_y - rectangle->y0) / (rectangle->y1 - rectangle->y0);
+		rec->v = (ray_z - rectangle->z0) / (rectangle->z1 - rectangle->z0);
+		rec->t = t;
+
+		vec3_set(&outward_normal, 1.0f, 0.0f, 0.0f);
+
+		break;
+	}
 
 	ray_at(ray, t, &rec->p);
 
