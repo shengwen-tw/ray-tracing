@@ -4,38 +4,7 @@
 #include <stdbool.h>
 #include "vector3.h"
 #include "color.h"
-
-enum {
-        LAMBERTIAN,
-        METAL,
-	GLASS
-} MATERIAL_TYPE;
-
-typedef struct {
-	point3_t orig;
-	vec3_t dir;
-} ray_t;
-
-typedef struct {
-	point3_t p;
-	vec3_t normal;
-	float u, v;
-	float t;
-	bool front_face;
-} hit_record_t;
-
-typedef struct {
-        point3_t center;
-        float radius;
-} sphere_t;
-
-typedef struct {
-        float x0;
-        float y0;
-        float x1;
-        float y1;
-        float k;
-} rectangle_t;
+#include "rt_objects.h"
 
 void set_face_normal(hit_record_t *rec, ray_t *ray, vec3_t *outward_normal);
 
