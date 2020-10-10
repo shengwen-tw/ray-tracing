@@ -16,6 +16,8 @@ int main(void)
 	int max_depth = 50;
 
 	/* world */
+	//rt_set_background_color(0.0f, 0.0f, 0.0f);
+
 	struct rt_obj rt_obj1;
 	rt_object_set_sphere_shape(&rt_obj1, 0.0f, -100.5f, -1.0f, 100.0f);
 	rt_object_set_difuse_material(&rt_obj1, 0.8f, 0.8f, 0.0f);

@@ -5,6 +5,9 @@
 #include "rt_objects.h"
 #include "common.h"
 
+bool use_default_background = true;
+color_t background_color;
+
 //initialize ray's origin and directional vector
 void ray_init(ray_t *ray, vec3_t *origin, vec3_t *direction)
 {
@@ -199,6 +202,38 @@ bool glass_scattering(ray_t *ray_in, hit_record_t *rec, ray_t *scattered_ray, fl
 /*-------------*
  * ray tracing *
  *-------------*/
+void rt_set_background_color(float r, float g, float b)
+{
+	background_color.e[0] = r;
+	background_color.e[1] = g;
+	background_color.e[2] = b;
+	use_default_background = false;
+}
+
+void rt_set_use_default_background(void)
+{
+	use_default_background = true;
+}
+
+void paint_default_background(ray_t *ray, color_t *pixel_color)
+{
+	vec3_t unit_ray_dir;
+	vec3_unit_vector(&ray->dir, &unit_ray_dir);
+
+	/* unit y direction range = -1 ~ 1*/
+	float t = 0.5f * (vec3_get_y(&unit_ray_dir) + 1.0f);
+
+	color_t color1, color2;
+	color_set(&color1, 1.0f, 1.0f, 1.0f);
+	color_set(&color2, 0.5f, 0.7f, 1.0f);
+
+	//color_blended = ((1.0 - t) * color1) + (t * color2)
+	color_t tmp1, tmp2;
+	color_scaling((1.0 - t), &color1, &tmp1);
+	color_scaling(t, &color2, &tmp2);
+	color_add(&tmp1, &tmp2, pixel_color);
+}
+
 void ray_color(ray_t *ray, color_t *pixel_color, int depth)
 {
 	hit_record_t rec;
@@ -250,21 +285,12 @@ void ray_color(ray_t *ray, color_t *pixel_color, int depth)
 		}
 	}
 
-	vec3_t unit_ray_dir;
-	vec3_unit_vector(&ray->dir, &unit_ray_dir);
-
-	/* unit y direction range = -1 ~ 1*/
-	float t = 0.5f * (vec3_get_y(&unit_ray_dir) + 1.0f);
-
-	color_t color1, color2;
-	color_set(&color1, 1.0f, 1.0f, 1.0f);
-	color_set(&color2, 0.5f, 0.7f, 1.0f);
-
-	//color_blended = ((1.0 - t) * color1) + (t * color2)
-	color_t tmp1, tmp2;
-	color_scaling((1.0 - t), &color1, &tmp1);
-	color_scaling(t, &color2, &tmp2);
-	color_add(&tmp1, &tmp2, pixel_color);
+	/* if ray didn't hit any thing then return the color of the background */
+	if(use_default_background == true) {
+		paint_default_background(ray, pixel_color);
+	} else {
+		*pixel_color = background_color;
+	}
 
 	return;
 }

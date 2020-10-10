@@ -6,6 +6,10 @@
 #include "color.h"
 #include "rt_objects.h"
 
+/* background */
+void rt_set_background_color(float r, float g, float b);
+void rt_set_use_default_background(void);
+
 void set_face_normal(hit_record_t *rec, ray_t *ray, vec3_t *outward_normal);
 
 void ray_init(ray_t *ray, vec3_t *origin, vec3_t *direction);
