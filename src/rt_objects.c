@@ -12,6 +12,7 @@ void rt_object_set_sphere_shape(struct rt_obj *obj,
 	float center_x, float center_y, float center_z, float radius)
 {
 	obj->hittable_type = RT_SHAPE_SPHERE;
+	obj->emit_light = false;
 	obj->sphere.center.e[0] = center_x ;
 	obj->sphere.center.e[1] = center_y;
 	obj->sphere.center.e[2] = center_z;
@@ -23,6 +24,7 @@ void rt_object_set_rectangle_shape(struct rt_obj *obj,
         float x0, float y0, float x1, float y1, float k)
 {
 	obj->hittable_type = RT_SHAPE_RECTANGLE;
+	obj->emit_light = false;
 	obj->rectangle.x0 = x0;
 	obj->rectangle.y0 = y0;
 	obj->rectangle.x1 = x1;
@@ -60,6 +62,16 @@ void rt_object_set_glass_material(struct rt_obj *obj, float index_of_refraction)
 	obj->albedo.e[1] = 1.0f;
 	obj->albedo.e[2] = 1.0f;
 	obj->glass_ir = index_of_refraction;
+}
+
+void rt_object_set_light_emmision(struct rt_obj *obj, bool obj_emit_light,
+				  float emit_color_r, float emit_color_g,
+				  float emit_color_b)
+{
+	obj->emit_light = obj_emit_light;
+	obj->emit_light_color.e[0] = emit_color_r;
+	obj->emit_light_color.e[1] = emit_color_g;
+	obj->emit_light_color.e[2] = emit_color_b;
 }
 
 /*-------------*

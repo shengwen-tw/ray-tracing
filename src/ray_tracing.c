@@ -227,6 +227,7 @@ void ray_color(ray_t *ray, color_t *pixel_color, int depth)
 		case GLASS:
 			valid_scattering = glass_scattering(ray, &rec, &sub_ray,
                                                             hit_obj->glass_ir);
+			break;
 		default:
 			break;
 		}
@@ -238,6 +239,12 @@ void ray_color(ray_t *ray, color_t *pixel_color, int depth)
 			pixel_color->e[0] *= hit_obj->albedo.e[0];
 			pixel_color->e[1] *= hit_obj->albedo.e[1];
 			pixel_color->e[2] *= hit_obj->albedo.e[2];
+
+			if(hit_obj->emit_light == true) {
+				pixel_color->e[0] += hit_obj->emit_light_color.e[0];
+				pixel_color->e[1] += hit_obj->emit_light_color.e[1];
+				pixel_color->e[2] += hit_obj->emit_light_color.e[2];
+			}
 
 			return;
 		}

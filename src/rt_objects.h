@@ -13,7 +13,7 @@ enum {
 enum {
 	LAMBERTIAN,
 	METAL,
-	GLASS
+	GLASS,
 } MATERIAL_TYPE;
 
 typedef struct {
@@ -40,6 +40,10 @@ struct rt_obj {
 	float metal_fuzzyness;
 	float glass_ir; //index of refraction
 	float light_attenuation;
+
+	/* light emision from the object */
+	bool emit_light;
+	color_t emit_light_color;
 
 	struct rt_obj *next;
 };
@@ -69,6 +73,11 @@ void rt_object_set_difuse_material(struct rt_obj *obj,
 void rt_object_set_metal_material(struct rt_obj *obj,
         float albedo_red, float albedo_green, float albedo_blue, float fuzzyness);
 void rt_object_set_glass_material(struct rt_obj *obj, float index_of_refraction);
+
+/* light emission property */
+void rt_object_set_light_emmision(struct rt_obj *obj, bool obj_emit_light,
+                                  float emit_color_r, float emit_color_g,
+                                  float emit_color_b);
 
 void rt_object_list_clear(void);
 void rt_object_list_add(struct rt_obj *new_obj);
