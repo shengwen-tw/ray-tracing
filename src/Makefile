@@ -1,3 +1,5 @@
+EXECUTABLE=ray_tracing
+
 CFLAGS=-o2
 
 SRC=main.c \
@@ -12,8 +14,8 @@ CFLAGS+=-I./
 
 LDFLAGS=-lm
 
-all:
-	gcc $(CFLAGS) -o ray_tracing $(SRC) $(LDFLAGS)
+$(EXECUTABLE): $(SRC)
+	gcc $(CFLAGS) -o $@ $^ $(LDFLAGS)
 	./ray_tracing > output.ppm
 
 show:
