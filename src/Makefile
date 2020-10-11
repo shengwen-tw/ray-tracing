@@ -22,6 +22,7 @@ $(TEXTURES_PPM): $(TEXTURES)
 #compile the ray tracing program
 $(EXECUTABLE): $(SRC)
 	gcc $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	@./$(EXECUTABLE) > output.ppm
 
 run:
 	@./$(EXECUTABLE) > output.ppm

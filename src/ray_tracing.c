@@ -1,12 +1,13 @@
 #include <stdbool.h>
+#include <stdint.h>
 #include <math.h>
 #include "ray_tracing.h"
 #include "color.h"
 #include "rt_objects.h"
 #include "common.h"
 
-bool use_default_background = true;
-color_t background_color;
+int background_light_mode;
+color_t background_light_color;
 
 //initialize ray's origin and directional vector
 void ray_init(ray_t *ray, vec3_t *origin, vec3_t *direction)
@@ -169,9 +170,9 @@ bool rectangle_hit(rectangle_t *rectangle, ray_t *ray, float t0, float t1,
 	return true;
 }
 
-/*------------------*
- * light scattering *
- *------------------*/
+/*-------------------*
+ * material handling *
+ *-------------------*/
 bool lambertian_scattering(ray_t *ray_in, hit_record_t *rec, ray_t *scattered_ray)
 {
 	vec3_t random_vec;
@@ -243,23 +244,47 @@ bool glass_scattering(ray_t *ray_in, hit_record_t *rec, ray_t *scattered_ray, fl
 	return true;
 }
 
+void pixel_color_from_image(uint8_t *image, int width, int height,
+			    float u, float v, color_t *pixel_color)
+{
+	const int rgb_channel_bytes = 3;
+
+	u = clamp(u, 0.0, 1.0);
+	v = 1.0 - clamp(v, 0.0, 1.0);
+
+	int i = u * width;
+	int j = v * height;
+
+	if (i >= width)  i = width - 1;
+	if (j >= height) j = height - 1;
+
+	int r_index = (j * width * rgb_channel_bytes) + (i * rgb_channel_bytes) + 0;
+	int g_index = (j * width * rgb_channel_bytes) + (i * rgb_channel_bytes) + 1;
+	int b_index = (j * width * rgb_channel_bytes) + (i * rgb_channel_bytes) + 2;
+
+	float div_255 = 1.0f / 255.0f;
+	pixel_color->e[0] = image[r_index] * div_255;
+	pixel_color->e[1] = image[g_index] * div_255;
+	pixel_color->e[2] = image[b_index] * div_255;
+}
+
 /*-------------*
  * ray tracing *
  *-------------*/
-void rt_set_background_color(float r, float g, float b)
+void rt_set_background_light_color(float r, float g, float b)
 {
-	background_color.e[0] = r;
-	background_color.e[1] = g;
-	background_color.e[2] = b;
-	use_default_background = false;
+	background_light_color.e[0] = r;
+	background_light_color.e[1] = g;
+	background_light_color.e[2] = b;
+	background_light_mode = BACKGROUND_LIGHT_USE_DEFAULT;
 }
 
-void rt_set_use_default_background(void)
+void rt_set_use_default_background_light(void)
 {
-	use_default_background = true;
+	background_light_mode = BACKGROUND_LIGHT_USE_ASSIGNED_COLOR;
 }
 
-void paint_default_background(ray_t *ray, color_t *pixel_color)
+void emit_default_background_light(ray_t *ray, color_t *pixel_color)
 {
 	vec3_t unit_ray_dir;
 	vec3_unit_vector(&ray->dir, &unit_ray_dir);
@@ -278,7 +303,7 @@ void paint_default_background(ray_t *ray, color_t *pixel_color)
 	color_add(&tmp1, &tmp2, pixel_color);
 }
 
-void ray_color(ray_t *ray, color_t *pixel_color, int depth)
+void ray_color(ray_t *ray, color_t *pixel_color, float u, float v, int depth)
 {
 	hit_record_t rec;
 	int hit_material;
@@ -290,7 +315,7 @@ void ray_color(ray_t *ray, color_t *pixel_color, int depth)
 		return;
 	}
 
-	bool valid_scattering;
+	bool valid_scattering = false;
 	/* recursively refract the light until reaching the max depth */
 	if(rt_object_list_hit(ray, 0.001, INFINITY, &rec, &hit_obj) == true) {
 		ray_t sub_ray;
@@ -312,7 +337,7 @@ void ray_color(ray_t *ray, color_t *pixel_color, int depth)
 		}
 
 		if(valid_scattering == true) {
-			ray_color(&sub_ray, pixel_color, depth-1);
+			ray_color(&sub_ray, pixel_color, u, v, depth-1);
 
 			/* apply attenuation (albedo) of color after every scattering */
 			pixel_color->e[0] *= hit_obj->albedo.e[0];
@@ -327,13 +352,16 @@ void ray_color(ray_t *ray, color_t *pixel_color, int depth)
 
 			return;
 		}
-	}
+	} 
 
-	/* if ray didn't hit any thing then return the color of the background */
-	if(use_default_background == true) {
-		paint_default_background(ray, pixel_color);
-	} else {
-		*pixel_color = background_color;
+	/* if ray didn't hit any thing, than camera catch the background light */
+	switch(background_light_mode) {
+	case BACKGROUND_LIGHT_USE_DEFAULT:
+		emit_default_background_light(ray, pixel_color);
+		break;
+	case BACKGROUND_LIGHT_USE_ASSIGNED_COLOR:
+		*pixel_color = background_light_color;
+		break;
 	}
 
 	return;

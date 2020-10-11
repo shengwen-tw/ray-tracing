@@ -14,7 +14,7 @@ int main(void)
 {
 	int width, height, bpp;
 	uint8_t* rgb_image = stbi_load("./textures/earthmap.jpg", &width, &height, &bpp, 3);
-	fprintf(stderr, "texture image: \"./textures/earthmap.jpg\" is loaded\n");
+	fprintf(stderr, "texture image (%dx%d): \"./textures/earthmap.jpg\" is loaded\n", width, height);
 
 	/* image */
 	float aspect_ratio = 16.0 / 9.0;
@@ -24,7 +24,7 @@ int main(void)
 	int max_depth = 50;
 
 	/* world */
-	//rt_set_background_color(0.0f, 0.0f, 0.0f);
+	//rt_set_background_light_color(0.0f, 0.0f, 0.0f);
 
 	struct rt_obj rt_obj1;
 	rt_object_set_sphere_shape(&rt_obj1, 0.0f, -100.5f, -1.0f, 100.0f);
@@ -94,7 +94,7 @@ int main(void)
 				camera_get_ray(&camera, &ray, u, v);
 
 				color_t sample_color;
-				ray_color(&ray, &sample_color, max_depth);
+				ray_color(&ray, &sample_color, u, v, max_depth);
 				vec3_add(&pixel_color, &sample_color, &pixel_color);
 			}
 
